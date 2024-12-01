@@ -1,6 +1,8 @@
 use std::collections::BTreeMap;
 
-const INPUT: &str = include_str!("input/day1.txt");
+// Scores:
+// day1::part1 (avg 53.765µs, stddev 7.030µs in 9300 runs)
+// day1::part2 (avg 102.831µs, stddev 10.562µs in 4863 runs)
 
 fn parse_input(input: &str) -> (Vec<isize>, Vec<isize>) {
     input
@@ -21,8 +23,8 @@ fn parse_input(input: &str) -> (Vec<isize>, Vec<isize>) {
         .unzip()
 }
 
-pub fn part1() {
-    let (mut list1, mut list2) = parse_input(INPUT);
+pub fn part1(input: &str) -> isize {
+    let (mut list1, mut list2) = parse_input(input);
 
     list1.sort_unstable();
     list2.sort_unstable();
@@ -31,13 +33,11 @@ pub fn part1() {
         .zip(list2.into_iter())
         .map(|(a, b)| (a - b).abs())
         .sum();
-    println!("{sum}");
+    sum
 }
 
-pub fn part2() {
-    let input = include_str!("input/day1.txt");
-
-    let (list1, list2) = parse_input(INPUT);
+pub fn part2(input: &str) -> isize {
+    let (list1, list2) = parse_input(input);
     let mut appearances = BTreeMap::new();
     for value in list2 {
         let entry = appearances.entry(value).or_insert(0);
@@ -48,5 +48,5 @@ pub fn part2() {
         .into_iter()
         .map(|v| v * *appearances.get(&v).unwrap_or(&0))
         .sum();
-    println!("{sum}")
+    sum
 }

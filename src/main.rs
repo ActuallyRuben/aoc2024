@@ -1,6 +1,10 @@
+use std::time::Duration;
+
 mod day1;
+mod macros;
+
+const TIMEOUT: Duration = Duration::from_millis(500);
 
 fn main() {
-    day1::part1();
-    day1::part2();
+    puzzle!(day1: part1 = 1579939, part2 = 20351745);
 }
