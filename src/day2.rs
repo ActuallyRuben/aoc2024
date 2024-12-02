@@ -62,9 +62,7 @@ pub fn part2(input: &str) -> isize {
                 .split_whitespace()
                 .map(|x| x.parse::<isize>().unwrap())
                 .collect::<Vec<_>>();
-            if is_safe(&report) {
-                1
-            } else if is_damped_safe(&report) {
+            if is_safe(&report) || is_damped_safe(&report) {
                 1
             } else {
                 0
