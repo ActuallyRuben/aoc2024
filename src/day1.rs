@@ -1,9 +1,5 @@
 use std::collections::HashMap;
 
-// Scores:
-// day1::part1 (avg 34.347µs, stddev 5.150µs in 14558 runs)
-// day1::part2 (avg 52.756µs, stddev 5.080µs in 9478 runs)
-
 fn parse_input(input: &str) -> impl Iterator<Item = (isize, isize)> + '_ {
     input.lines().map(|line| {
         let a = &line[0..5];
