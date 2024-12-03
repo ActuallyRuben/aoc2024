@@ -64,13 +64,8 @@ macro_rules! puzzle_part {
     };};
     ($day:ident: $part:ident) => {{
         let start = std::time::Instant::now();
-        let input = std::hint::black_box(include_str!(concat!(
-            "input/",
-            stringify!($day),
-            ".txt"
-        )));
-        let solution =
-            $crate::$day::$part(input);
+        let input = std::hint::black_box(include_str!(concat!("input/", stringify!($day), ".txt")));
+        let solution = $crate::$day::$part(input);
         let end = std::time::Instant::now();
         println!(
             "{}::{} = {:?} (took {:?})",
