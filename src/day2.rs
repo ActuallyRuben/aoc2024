@@ -12,15 +12,18 @@ fn get_direction(diff: isize) -> Option<Direction> {
     }
 }
 
-pub fn is_safe(report: &[isize]) -> bool {
-    let Some(direction) = get_direction(report[1] - report[0]) else {
+pub fn is_safe(mut report: impl Iterator<Item = isize>) -> bool {
+    let first = report.next().unwrap();
+    let second = report.next().unwrap();
+    let Some(direction) = get_direction(second - first) else {
         return false;
     };
-    for r in report[1..].windows(2) {
-        let [prev, x] = r else { unreachable!() };
-        if Some(direction) != get_direction(*x - *prev) {
+    let mut prev = second;
+    while let Some(next) = report.next() {
+        if Some(direction) != get_direction(next - prev) {
             return false;
         }
+        prev = next;
     }
     true
 }
@@ -29,11 +32,8 @@ pub fn part1(input: &str) -> isize {
     input
         .lines()
         .map(|x| {
-            let report = x
-                .split_whitespace()
-                .map(|x| x.parse::<isize>().unwrap())
-                .collect::<Vec<_>>();
-            if is_safe(&report) {
+            let report = x.split_whitespace().map(|x| x.parse::<isize>().unwrap());
+            if is_safe(report) {
                 1
             } else {
                 0
@@ -42,12 +42,10 @@ pub fn part1(input: &str) -> isize {
         .sum()
 }
 
-pub fn is_damped_safe(report: &[isize]) -> bool {
-    let mut damped_report = vec![0; report.len() - 1];
+pub fn is_damped_safe(report: impl Iterator<Item = isize> + Clone + ExactSizeIterator) -> bool {
     for i in 0..report.len() {
-        damped_report[0..i].clone_from_slice(&report[0..i]);
-        damped_report[i..].clone_from_slice(&report[i + 1..]);
-        if is_safe(&damped_report) {
+        let damped_report = report.clone().take(i).chain(report.clone().skip(i + 1));
+        if is_safe(damped_report) {
             return true;
         }
     }
@@ -62,7 +60,7 @@ pub fn part2(input: &str) -> isize {
                 .split_whitespace()
                 .map(|x| x.parse::<isize>().unwrap())
                 .collect::<Vec<_>>();
-            if is_safe(&report) || is_damped_safe(&report) {
+            if is_safe(report.iter().copied()) || is_damped_safe(report.iter().copied()) {
                 1
             } else {
                 0

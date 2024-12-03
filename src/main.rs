@@ -9,10 +9,12 @@ mod util;
 const TIMEOUT: Duration = Duration::from_millis(500);
 
 // Scores:
-// day1::part1 (avg 27.502µs, stddev 4.279µs in 18181 runs)
-// day1::part2 (avg 46.448µs, stddev 6.685µs in 10765 runs)
-// day2::part1 (avg 78.088µs, stddev 6.640µs in 6404 runs)
-// day2::part2 (avg 124.095µs, stddev 13.824µs in 4030 runs)
+// day1::part1 (avg 31.515µs, stddev 1.100µs in 15866 runs)
+// day1::part2 (avg 42.266µs, stddev 1.181µs in 11830 runs)
+// day2::part1 (avg 45.502µs, stddev 1.724µs in 10989 runs)
+// day2::part2 (avg 87.779µs, stddev 2.910µs in 5697 runs)
+// day3::part1 (avg 31.638µs, stddev 1.331µs in 15804 runs)
+// day3::part2 (avg 22.695µs, stddev 0.941µs in 22031 runs)
 
 fn main() {
     puzzle!(day1: part1 = 1579939, part2 = 20351745);
