@@ -1,21 +1,30 @@
+fn split_number(input: &str, sep: char) -> Option<(usize, &str)> {
+    for (i, c) in input.chars().enumerate() {
+        match c {
+            '0'..='9' => continue,
+            c if i > 0 && c == sep => return Some((input[0..i].parse().unwrap(), &input[i + 1..])),
+            _ => return None,
+        }
+    }
+    None
+}
+
 pub fn part1(mut input: &str) -> usize {
     let mut total = 0;
     while !input.is_empty() {
-        if !input.starts_with("mul(") {
+        if !input.starts_with("mu") {
             input = &input[1..];
             continue;
         }
         input = &input[4..];
-        let mut iter = input.splitn(2, ",");
-        let Some(x) = iter.next().and_then(|x| x.parse::<usize>().ok()) else {
+        let Some((x, next)) = split_number(input, ',') else {
             continue;
         };
-        input = iter.next().unwrap();
-        let mut iter = input.splitn(2, ")");
-        let Some(y) = iter.next().and_then(|x| x.parse::<usize>().ok()) else {
+        input = next;
+        let Some((y, next)) = split_number(input, ')') else {
             continue;
         };
-        input = iter.next().unwrap();
+        input = next;
         total += x * y;
     }
     total
@@ -26,7 +35,7 @@ pub fn part2(mut input: &str) -> usize {
     let mut enabled = true;
     while !input.is_empty() {
         if input.starts_with("do") {
-            if input[2..].starts_with("n") {
+            if input.starts_with("don'") {
                 // don't()
                 input = &input[6..];
                 enabled = false;
@@ -38,24 +47,21 @@ pub fn part2(mut input: &str) -> usize {
                 continue;
             }
         }
-        if !enabled || !input.starts_with("mul(") {
+
+        if !enabled || !input.starts_with("mu") {
             input = &input[1..];
             continue;
         }
         input = &input[4..];
-        let mut iter = input.splitn(2, ",");
-        let Some(x) = iter.next().and_then(|x| x.parse::<usize>().ok()) else {
+        let Some((x, next)) = split_number(input, ',') else {
             continue;
         };
-        input = iter.next().unwrap();
-        let mut iter = input.splitn(2, ")");
-        let Some(y) = iter.next().and_then(|x| x.parse::<usize>().ok()) else {
+        input = next;
+        let Some((y, next)) = split_number(input, ')') else {
             continue;
         };
-        input = iter.next().unwrap();
-        if enabled {
-            total += x * y;
-        }
+        input = next;
+        total += x * y;
     }
     total
 }

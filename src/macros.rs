@@ -22,7 +22,7 @@ macro_rules! puzzle_part {
                         stringify!($day),
                         ".txt"
                     )));
-                    let sol2 = $crate::$day::$part(input);
+                    let sol2 = std::hint::black_box($crate::$day::$part(input));
                     let end = std::time::Instant::now();
                     if solution != sol2 {
                         println!(
