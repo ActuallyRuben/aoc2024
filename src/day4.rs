@@ -1,49 +1,40 @@
 use std::ops::Index;
-use std::str::FromStr;
 
 #[derive(Debug)]
-struct Grid<T> {
+struct RefGrid<'a> {
     width: usize,
     height: usize,
-    contents: Vec<T>,
+    contents: &'a [u8],
 }
 
-impl<T: From<char>> FromStr for Grid<T> {
-    type Err = ();
-
-    fn from_str(input: &str) -> Result<Self, ()> {
+impl<'a> RefGrid<'a> {
+    pub fn from_str(input: &'a str) -> Self {
         let width = input.lines().next().unwrap().len();
-        let contents: Vec<T> = input
-            .chars()
-            .filter(|c| *c != '\n')
-            .map(|c| T::from(c))
-            .collect();
-        let height = contents.len() / width;
-        Ok(Self {
+        let height = input.len() / (width + 1);
+        Self {
             width,
             height,
-            contents,
-        })
+            contents: input.as_bytes(),
+        }
     }
 }
 
-impl<T> Index<(usize, usize)> for Grid<T> {
-    type Output = T;
-    fn index(&self, (x, y): (usize, usize)) -> &T {
+impl Index<(usize, usize)> for RefGrid<'_> {
+    type Output = u8;
+    fn index(&self, (x, y): (usize, usize)) -> &u8 {
         assert!(x < self.width);
-        assert!(y < self.height);
-        &self.contents[y * self.width + x]
+        &self.contents[y * (self.width + 1) + x]
     }
 }
 
-fn matches(grid: &Grid<char>, text: &str, x: usize, y: usize, dx: isize, dy: isize) -> bool {
-    for (i, c) in text.chars().enumerate() {
+fn matches(grid: &RefGrid, text: &[u8], x: usize, y: usize, dx: isize, dy: isize) -> bool {
+    for (i, c) in text.into_iter().enumerate() {
         let x = (x as isize + (i as isize) * dx) as usize;
         let y = (y as isize + (i as isize) * dy) as usize;
         if x >= grid.width || y >= grid.height {
             return false;
         }
-        if grid[(x, y)] != c {
+        if grid[(x, y)] != *c {
             return false;
         }
     }
@@ -51,9 +42,9 @@ fn matches(grid: &Grid<char>, text: &str, x: usize, y: usize, dx: isize, dy: isi
 }
 
 pub fn part1(input: &str) -> usize {
-    let grid: Grid<char> = input.parse().unwrap();
-    const XMAS: &str = "XMAS";
-    const SAMX: &str = "SAMX";
+    let grid = RefGrid::from_str(input);
+    const XMAS: &[u8] = b"XMAS";
+    const SAMX: &[u8] = b"SAMX";
     (0..grid.height)
         .map(|j| {
             (0..grid.width)
@@ -91,21 +82,22 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    let grid: Grid<char> = input.parse().unwrap();
-    const MAS: &str = "MAS";
-    const SAM: &str = "SAM";
+    let grid = RefGrid::from_str(input);
+    
     (0..(grid.height - 2))
         .map(|j| {
             (0..(grid.width - 2))
                 .map(|i| {
-                    if (matches(&grid, MAS, i, j, 1, 1) || matches(&grid, SAM, i, j, 1, 1))
-                        && (matches(&grid, MAS, i, j + 2, 1, -1)
-                            || matches(&grid, SAM, i, j + 2, 1, -1))
-                    {
-                        1
-                    } else {
-                        0
+                    if grid[(i + 1, j + 1)] != b'A' {
+                        return 0
                     }
+                    if !(grid[(i, j)] == b'M' && grid[(i + 2, j + 2)] == b'S') && !(grid[(i, j)] == b'S' && grid[(i + 2, j + 2)] == b'M') {
+                        return 0;
+                    }
+                    if !(grid[(i + 2, j)] == b'M' && grid[(i, j + 2)] == b'S') && !(grid[(i + 2, j)] == b'S' && grid[(i, j + 2)] == b'M') {
+                        return 0;
+                    }
+                    1
                 })
                 .sum::<usize>()
         })
