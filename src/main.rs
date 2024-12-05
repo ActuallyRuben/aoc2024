@@ -4,6 +4,7 @@ mod day1;
 mod day2;
 mod day3;
 mod day4;
+mod day5;
 mod macros;
 mod util;
 
@@ -24,4 +25,5 @@ fn main() {
     puzzle!(day2: part1 = 483, part2 = 528);
     puzzle!(day3: part1 = 153469856, part2 = 77055967);
     puzzle!(day4: part1 = 2297, part2 = 1745);
+    puzzle!(day5: part1 = 5713, part2 = 5180);
 }
