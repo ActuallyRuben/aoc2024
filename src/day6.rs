@@ -1,10 +1,13 @@
+use crate::util::Grid;
 use std::collections::HashSet;
 use std::ops::Add;
-use crate::util::Grid;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 enum Direction {
-    North, East, South, West
+    North,
+    East,
+    South,
+    West,
 }
 
 impl TryFrom<u8> for Direction {
@@ -16,7 +19,7 @@ impl TryFrom<u8> for Direction {
             b'>' => Ok(Direction::East),
             b'v' => Ok(Direction::South),
             b'<' => Ok(Direction::West),
-            _ => Err(())
+            _ => Err(()),
         }
     }
 }
@@ -67,7 +70,8 @@ impl Add<(usize, usize)> for Direction {
 
 #[derive(Clone, Hash, Eq, PartialEq)]
 struct Guard {
-    pos: (usize, usize), direction: Direction
+    pos: (usize, usize),
+    direction: Direction,
 }
 
 pub fn part1(input: &str) -> usize {
@@ -76,9 +80,10 @@ pub fn part1(input: &str) -> usize {
     for (pos, v) in grid.iter() {
         if *v == b'^' {
             guard = Some(Guard {
-                pos, direction: Direction::North
+                pos,
+                direction: Direction::North,
             });
-            break
+            break;
         }
     }
     let mut guard = guard.unwrap();
@@ -92,11 +97,11 @@ pub fn part1(input: &str) -> usize {
         'inner: loop {
             let new_pos = guard.pos + guard.direction;
             if !grid.contains(new_pos) {
-                break 'outer
+                break 'outer;
             }
             if grid[new_pos] != b'#' {
                 guard.pos = new_pos;
-                break 'inner
+                break 'inner;
             }
             guard.direction = guard.direction.rotate_right();
         }
@@ -107,7 +112,7 @@ pub fn part1(input: &str) -> usize {
 fn can_escape(grid: &Grid<Vec<u8>>, mut visited: HashSet<Guard>, mut guard: Guard) -> bool {
     loop {
         if visited.contains(&guard) {
-            return false
+            return false;
         }
         visited.insert(guard.clone());
         'inner: loop {
@@ -117,7 +122,7 @@ fn can_escape(grid: &Grid<Vec<u8>>, mut visited: HashSet<Guard>, mut guard: Guar
             }
             if grid[new_pos] != b'#' {
                 guard.pos = new_pos;
-                break 'inner
+                break 'inner;
             }
             guard.direction = guard.direction.rotate_right();
         }
@@ -130,9 +135,10 @@ pub fn part2(input: &str) -> usize {
     for (pos, v) in grid.iter() {
         if *v == b'^' {
             guard = Some(Guard {
-                pos, direction: Direction::North
+                pos,
+                direction: Direction::North,
             });
-            break
+            break;
         }
     }
 
@@ -144,7 +150,7 @@ pub fn part2(input: &str) -> usize {
         'inner: loop {
             let new_pos = guard.pos + guard.direction;
             if !grid.contains(new_pos) {
-                break 'outer
+                break 'outer;
             }
             if grid[new_pos] == b'.' {
                 grid[new_pos] = b'#';
@@ -156,7 +162,7 @@ pub fn part2(input: &str) -> usize {
             if grid[new_pos] != b'#' {
                 visited.insert(guard.clone());
                 guard.pos = new_pos;
-                break 'inner
+                break 'inner;
             }
             guard.direction = guard.direction.rotate_right();
         }

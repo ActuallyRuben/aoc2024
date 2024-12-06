@@ -16,17 +16,17 @@ fn print_valid(rels: &HashMap<usize, HashSet<usize>>, seq: &[usize]) -> bool {
 fn fix_invalid(rels: &HashMap<usize, HashSet<usize>>, seq: &mut [usize]) -> bool {
     let empty_set = HashSet::new();
     let mut any_fixes = false;
-        for i in 0..seq.len() {
-            let (seq, tail) = seq.split_at_mut(i);
-            let x = &mut tail[0];
-            let afterset = rels.get(x).unwrap_or(&empty_set);
-            for y in &mut seq[0..i] {
-                if afterset.contains(y) {
-                    std::mem::swap(x, y);
-                    any_fixes = true;
-                }
+    for i in 0..seq.len() {
+        let (seq, tail) = seq.split_at_mut(i);
+        let x = &mut tail[0];
+        let afterset = rels.get(x).unwrap_or(&empty_set);
+        for y in &mut seq[0..i] {
+            if afterset.contains(y) {
+                std::mem::swap(x, y);
+                any_fixes = true;
             }
         }
+    }
     any_fixes
 }
 
@@ -45,14 +45,19 @@ pub fn part1(input: &str) -> usize {
         afterset.insert(after);
     }
 
-    lines.map(|line| {
-        let values: Vec<usize> = line.split(',').map(|x| x.parse::<usize>().unwrap()).collect();
-        if print_valid(&after_rels, &values) {
-            values[values.len() / 2]
-        } else {
-            0
-        }
-    }).sum()
+    lines
+        .map(|line| {
+            let values: Vec<usize> = line
+                .split(',')
+                .map(|x| x.parse::<usize>().unwrap())
+                .collect();
+            if print_valid(&after_rels, &values) {
+                values[values.len() / 2]
+            } else {
+                0
+            }
+        })
+        .sum()
 }
 
 pub fn part2(input: &str) -> usize {
@@ -70,12 +75,17 @@ pub fn part2(input: &str) -> usize {
         afterset.insert(after);
     }
 
-    lines.map(|line| {
-        let mut values: Vec<usize> = line.split(',').map(|x| x.parse::<usize>().unwrap()).collect();
-        if fix_invalid(&after_rels, &mut values) {
-            values[values.len() / 2]
-        } else {
-            0
-        }
-    }).sum()
+    lines
+        .map(|line| {
+            let mut values: Vec<usize> = line
+                .split(',')
+                .map(|x| x.parse::<usize>().unwrap())
+                .collect();
+            if fix_invalid(&after_rels, &mut values) {
+                values[values.len() / 2]
+            } else {
+                0
+            }
+        })
+        .sum()
 }

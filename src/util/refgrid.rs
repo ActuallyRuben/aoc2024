@@ -47,26 +47,34 @@ impl<T> Grid<T> {
 
     pub fn iter(&self) -> impl Iterator<Item = ((usize, usize), &u8)>
     where
-        T: Deref<Target=[u8]>,
+        T: Deref<Target = [u8]>,
     {
         let width = self.width();
-        self.contents.iter().enumerate().map(move |(n, x)| {
-            let j = n / (width + 1);
-            let i = n % (width + 1);
-            ((i, j), x)
-        }).filter(move |((i, _), _)| *i < width)
+        self.contents
+            .iter()
+            .enumerate()
+            .map(move |(n, x)| {
+                let j = n / (width + 1);
+                let i = n % (width + 1);
+                ((i, j), x)
+            })
+            .filter(move |((i, _), _)| *i < width)
     }
 
     pub fn iter_mut(&mut self) -> impl Iterator<Item = ((usize, usize), &mut u8)>
     where
-        T: Deref<Target=[u8]> + DerefMut,
+        T: Deref<Target = [u8]> + DerefMut,
     {
         let width = self.width();
-        self.contents.iter_mut().enumerate().map(move |(n, x)| {
-            let j = n / (width + 1);
-            let i = n % (width + 1);
-            ((i, j), x)
-        }).filter(move |((i, _), _)| *i < width)
+        self.contents
+            .iter_mut()
+            .enumerate()
+            .map(move |(n, x)| {
+                let j = n / (width + 1);
+                let i = n % (width + 1);
+                ((i, j), x)
+            })
+            .filter(move |((i, _), _)| *i < width)
     }
 }
 

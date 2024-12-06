@@ -1,4 +1,4 @@
-mod sortedvec;
 mod refgrid;
+mod sortedvec;
 
 pub use refgrid::Grid;
