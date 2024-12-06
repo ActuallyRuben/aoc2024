@@ -6,6 +6,9 @@ edition = "2021"
 [features]
 bench = []
 
+[profile.dev]
+overflow-checks = false
+
 [profile.release]
 opt-level = 3
 codegen-units = 1
