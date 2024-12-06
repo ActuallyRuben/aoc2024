@@ -5,8 +5,9 @@ mod day2;
 mod day3;
 mod day4;
 mod day5;
+mod day6;
 mod macros;
-mod util;
+pub(crate) mod util;
 
 const TIMEOUT: Duration = Duration::from_millis(500);
 
@@ -26,4 +27,5 @@ fn main() {
     puzzle!(day3: part1 = 153469856, part2 = 77055967);
     puzzle!(day4: part1 = 2297, part2 = 1745);
     puzzle!(day5: part1 = 5713, part2 = 5180);
+    puzzle!(day6: part1);
 }
