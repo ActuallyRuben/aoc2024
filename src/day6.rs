@@ -161,8 +161,5 @@ pub fn part2(input: &str) -> usize {
             guard.direction = guard.direction.rotate_right();
         }
     }
-    for pos in &obstacles {
-        grid[*pos] = b'O';
-    }
     obstacles.len()
 }
