@@ -13,20 +13,20 @@ pub(crate) mod util;
 const TIMEOUT: Duration = Duration::from_millis(500);
 
 // Scores:
-// day1::part1 (avg 28.588µs, stddev 5.429µs in 17490 runs)
-// day1::part2 (avg 51.526µs, stddev 7.949µs in 9705 runs)
-// day2::part1 (avg 39.001µs, stddev 7.331µs in 12820 runs)
-// day2::part2 (avg 97.931µs, stddev 11.958µs in 5106 runs)
-// day3::part1 (avg 17.983µs, stddev 3.788µs in 27804 runs)
-// day3::part2 (avg 13.462µs, stddev 3.605µs in 37142 runs)
-// day4::part1 (avg 265.715µs, stddev 14.518µs in 1882 runs)
-// day4::part2 (avg 58.644µs, stddev 5.670µs in 8526 runs)
-// day5::part1 (avg 233.986µs, stddev 9.923µs in 2137 runs)
-// day5::part2 (avg 375.288µs, stddev 15.095µs in 1333 runs)
-// day6::part1 (avg 20.089µs, stddev 2.074µs in 24889 runs)
-// day6::part2 (avg 203.058542ms, stddev 440.714µs in 3 runs)
-// day7::part1 (avg 197.67µs, stddev 17.230µs in 2530 runs)
-// day7::part2 (avg 199.364µs, stddev 13.630µs in 2508 runs)
+// day1::part1 (avg 28.238µs, stddev 3.894µs in 17707 runs)
+// day1::part2 (avg 50.064µs, stddev 4.525µs in 9988 runs)
+// day2::part1 (avg 38.397µs, stddev 3.446µs in 13022 runs)
+// day2::part2 (avg 94.818µs, stddev 10.448µs in 5274 runs)
+// day3::part1 (avg 17.669µs, stddev 1.782µs in 28297 runs)
+// day3::part2 (avg 14.261µs, stddev 1.779µs in 35059 runs)
+// day4::part1 (avg 260.76µs, stddev 13.461µs in 1918 runs)
+// day4::part2 (avg 58.523µs, stddev 5.781µs in 8544 runs)
+// day5::part1 (avg 237.363µs, stddev 10.292µs in 2107 runs)
+// day5::part2 (avg 382.706µs, stddev 13.036µs in 1307 runs)
+// day6::part1 (avg 21.128µs, stddev 2.412µs in 23666 runs)
+// day6::part2 (avg 72.430939ms, stddev 628.537µs in 7 runs)
+// day7::part1 (avg 195.52µs, stddev 13.540µs in 2558 runs)
+// day7::part2 (avg 196.256µs, stddev 21.519µs in 2548 runs)
 
 fn main() {
     puzzle!(day1: part1 = 1579939, part2 = 20351745);

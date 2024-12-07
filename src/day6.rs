@@ -1,6 +1,8 @@
 use crate::util::Grid;
 use std::collections::HashSet;
 use std::ops::Add;
+use std::sync::Mutex;
+use std::thread;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 enum Direction {
@@ -8,31 +10,6 @@ enum Direction {
     East,
     South,
     West,
-}
-
-impl TryFrom<u8> for Direction {
-    type Error = ();
-
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
-        match value {
-            b'^' => Ok(Direction::North),
-            b'>' => Ok(Direction::East),
-            b'v' => Ok(Direction::South),
-            b'<' => Ok(Direction::West),
-            _ => Err(()),
-        }
-    }
-}
-
-impl From<Direction> for u8 {
-    fn from(value: Direction) -> Self {
-        match value {
-            Direction::North => b'^',
-            Direction::East => b'>',
-            Direction::South => b'v',
-            Direction::West => b'<',
-        }
-    }
 }
 
 impl Direction {
@@ -109,7 +86,12 @@ pub fn part1(input: &str) -> usize {
     visited
 }
 
-fn can_escape(grid: &Grid<Vec<u8>>, mut visited: HashSet<Guard>, mut guard: Guard) -> bool {
+fn can_escape(
+    grid: &Grid<&[u8]>,
+    extra_obstacle: (usize, usize),
+    mut visited: HashSet<Guard>,
+    mut guard: Guard,
+) -> bool {
     loop {
         if visited.contains(&guard) {
             return false;
@@ -120,7 +102,7 @@ fn can_escape(grid: &Grid<Vec<u8>>, mut visited: HashSet<Guard>, mut guard: Guar
             if !grid.contains(new_pos) {
                 return true;
             }
-            if grid[new_pos] != b'#' {
+            if new_pos != extra_obstacle && grid[new_pos] != b'#' {
                 guard.pos = new_pos;
                 break 'inner;
             }
@@ -130,7 +112,7 @@ fn can_escape(grid: &Grid<Vec<u8>>, mut visited: HashSet<Guard>, mut guard: Guar
 }
 
 pub fn part2(input: &str) -> usize {
-    let mut grid = Grid::from_str_cloned(input);
+    let grid = Grid::from_str(input);
     let mut guard = None;
     for (pos, v) in grid.iter() {
         if *v == b'^' {
@@ -143,21 +125,26 @@ pub fn part2(input: &str) -> usize {
     }
 
     let mut guard = guard.unwrap();
+    let mut checked = HashSet::new();
     let mut visited = HashSet::new();
-    let mut obstacles = HashSet::new();
-
-    'outer: loop {
+    let obstacles = Mutex::new(HashSet::new());
+    thread::scope(|s| 'outer: loop {
         'inner: loop {
             let new_pos = guard.pos + guard.direction;
             if !grid.contains(new_pos) {
                 break 'outer;
             }
-            if grid[new_pos] == b'.' {
-                grid[new_pos] = b'#';
-                if !can_escape(&grid, visited.clone(), guard.clone()) {
-                    obstacles.insert(new_pos);
-                }
-                grid[new_pos] = b'-';
+            if grid[new_pos] == b'.' && !checked.contains(&new_pos) {
+                let inner_guard = guard.clone();
+                let inner_visited = visited.clone();
+                let inner_obstacles = &obstacles;
+                let inner_grid = &grid;
+                s.spawn(move || {
+                    if !can_escape(inner_grid, new_pos, inner_visited, inner_guard) {
+                        inner_obstacles.lock().unwrap().insert(new_pos);
+                    }
+                });
+                checked.insert(new_pos);
             }
             if grid[new_pos] != b'#' {
                 visited.insert(guard.clone());
@@ -166,6 +153,7 @@ pub fn part2(input: &str) -> usize {
             }
             guard.direction = guard.direction.rotate_right();
         }
-    }
-    obstacles.len()
+    });
+
+    obstacles.into_inner().unwrap().len()
 }
