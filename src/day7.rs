@@ -43,11 +43,14 @@ pub fn part1(input: &str) -> usize {
 }
 
 fn deconcat(rhs: usize, result: usize) -> Option<usize> {
-    let result = format!("{result}");
-    let rhs = format!("{rhs}");
-    if result.len() > rhs.len() && result.ends_with(&rhs) {
-        let new_len = result.len() - rhs.len();
-        Some(result[0..new_len].parse().unwrap())
+    if rhs >= result {
+        return None
+    }
+    let rhs_digits = (rhs as f32).log10().floor() as u32 + 1;
+    let lhs_mulled = result - rhs;
+    let rhs_amt = 10usize.pow(rhs_digits);
+    if lhs_mulled % rhs_amt == 0 {
+        Some(lhs_mulled / rhs_amt)
     } else {
         None
     }
