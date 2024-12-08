@@ -39,7 +39,7 @@ where
             } else if let Some(next) = self.iter.next() {
                 self.state = Some((next, self.iter.clone()))
             } else {
-                return None
+                return None;
             }
         }
     }
@@ -49,5 +49,19 @@ where
 fn permutations() {
     let input = [1, 2, 3, 4, 5];
     let output: Vec<(i32, i32)> = input.into_iter().permutations().collect();
-    assert_eq!(output, vec![(1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5), (4, 5)])
+    assert_eq!(
+        output,
+        vec![
+            (1, 2),
+            (1, 3),
+            (1, 4),
+            (1, 5),
+            (2, 3),
+            (2, 4),
+            (2, 5),
+            (3, 4),
+            (3, 5),
+            (4, 5)
+        ]
+    )
 }

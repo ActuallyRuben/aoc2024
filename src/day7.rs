@@ -44,7 +44,7 @@ pub fn part1(input: &str) -> usize {
 
 fn deconcat(rhs: usize, result: usize) -> Option<usize> {
     if rhs >= result {
-        return None
+        return None;
     }
     let rhs_digits = (rhs as f32).log10().floor() as u32 + 1;
     let lhs_mulled = result - rhs;
