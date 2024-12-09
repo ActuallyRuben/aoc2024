@@ -1,5 +1,26 @@
 use std::cmp::Ordering;
 use std::collections::LinkedList;
+use std::ops::ControlFlow;
+
+fn parse_filesystem<B: FromIterator<Space>>(input: &str) -> B {
+    input
+        .trim()
+        .as_bytes()
+        .chunks(2)
+        .enumerate()
+        .flat_map(|(id, chars)| {
+            [
+                Some(Space::File {
+                    moved: false,
+                    id,
+                    space: chars[0] - b'0',
+                }),
+                chars.get(1).map(|c| Space::Free { space: *c - b'0' }),
+            ]
+        })
+        .flatten()
+        .collect()
+}
 
 pub fn part1(input: &str) -> usize {
     let mut input: Vec<u8> = if input.len() % 2 == 1 {
@@ -67,17 +88,7 @@ pub enum Space {
 }
 
 pub fn part2(input: &str) -> usize {
-    let mut filesystem = LinkedList::new();
-    for (id, chars) in input.trim().as_bytes().chunks(2).enumerate() {
-        filesystem.push_back(Space::File {
-            moved: false,
-            id,
-            space: chars[0] - b'0',
-        });
-        if let Some(c) = chars.get(1) {
-            filesystem.push_back(Space::Free { space: *c - b'0' })
-        }
-    }
+    let mut filesystem: LinkedList<Space> = parse_filesystem(input);
 
     loop {
         let Some((file_id, file_space)) = filesystem.iter_mut().rev().find_map(|x| match x {
@@ -92,42 +103,35 @@ pub fn part2(input: &str) -> usize {
             break;
         };
 
-        let mut placed = false;
-
-        filesystem = filesystem
-            .into_iter()
-            .flat_map(|spot| {
-                if placed {
-                    return vec![spot];
+        map_linkedlist(&mut filesystem, |part| {
+            match part.front_mut().unwrap() {
+                Space::File { .. } => {
+                    return ControlFlow::Continue(())
                 }
-                let Space::Free { space } = spot else {
-                    return vec![spot];
-                };
-                if space >= file_space {
-                    placed = true;
-                    vec![
-                        Space::File {
+                Space::Free { space } => {
+                    if *space > file_space {
+                        *space -= file_space;
+                        part.push_front(Space::File {
                             moved: true,
                             id: file_id,
                             space: file_space,
-                        },
-                        Space::Free {
-                            space: space - file_space,
-                        },
-                    ]
-                } else if space == file_space {
-                    placed = true;
-                    vec![Space::File {
-                        moved: true,
-                        id: file_id,
-                        space,
-                    }]
-                } else {
-                    vec![spot]
+                        });
+                        ControlFlow::Break(())
+                    } else if *space == file_space {
+                        *part.front_mut().unwrap() = Space::File {
+                            moved: true,
+                            id: file_id,
+                            space: file_space,
+                        };
+                        ControlFlow::Break(())
+                    } else {
+                        ControlFlow::Continue(())
+                    }
                 }
-            })
-            .collect();
+            }
+        });
     }
+
     let mut position = 0;
     let mut result = 0;
 
@@ -140,12 +144,26 @@ pub fn part2(input: &str) -> usize {
                 }
             }
             Space::Free { space } => {
-                for _ in 0..space {
-                }
+                for _ in 0..space {}
                 position += space as usize;
             }
         }
     }
 
     result
+}
+fn map_linkedlist<T>(list: &mut LinkedList<T>, mut f: impl FnMut(&mut LinkedList<T>) -> ControlFlow<()>) {
+    let mut before = LinkedList::new();
+    while !list.is_empty() {
+        let mut after = list.split_off(1);
+        let result = f(list);
+        before.append(list);
+        if result.is_continue() {
+            *list = after;
+        } else {
+            before.append(&mut after);
+        }
+        
+    }
+    *list = before;
 }
