@@ -103,32 +103,28 @@ pub fn part2(input: &str) -> usize {
             break;
         };
 
-        map_linkedlist(&mut filesystem, |part| {
-            match part.front_mut().unwrap() {
-                Space::File { .. } => {
-                    return ControlFlow::Continue(())
+        map_linkedlist(&mut filesystem, |part| match part.front_mut().unwrap() {
+            Space::File { .. } => ControlFlow::Continue(()),
+            Space::Free { space } => match (*space).cmp(&file_space) {
+                Ordering::Greater => {
+                    *space -= file_space;
+                    part.push_front(Space::File {
+                        moved: true,
+                        id: file_id,
+                        space: file_space,
+                    });
+                    ControlFlow::Break(())
                 }
-                Space::Free { space } => {
-                    if *space > file_space {
-                        *space -= file_space;
-                        part.push_front(Space::File {
-                            moved: true,
-                            id: file_id,
-                            space: file_space,
-                        });
-                        ControlFlow::Break(())
-                    } else if *space == file_space {
-                        *part.front_mut().unwrap() = Space::File {
-                            moved: true,
-                            id: file_id,
-                            space: file_space,
-                        };
-                        ControlFlow::Break(())
-                    } else {
-                        ControlFlow::Continue(())
-                    }
+                Ordering::Equal => {
+                    *part.front_mut().unwrap() = Space::File {
+                        moved: true,
+                        id: file_id,
+                        space: file_space,
+                    };
+                    ControlFlow::Break(())
                 }
-            }
+                Ordering::Less => ControlFlow::Continue(()),
+            },
         });
     }
 
@@ -152,7 +148,11 @@ pub fn part2(input: &str) -> usize {
 
     result
 }
-fn map_linkedlist<T>(list: &mut LinkedList<T>, mut f: impl FnMut(&mut LinkedList<T>) -> ControlFlow<()>) {
+
+fn map_linkedlist<T>(
+    list: &mut LinkedList<T>,
+    mut f: impl FnMut(&mut LinkedList<T>) -> ControlFlow<()>,
+) {
     let mut before = LinkedList::new();
     while !list.is_empty() {
         let mut after = list.split_off(1);
@@ -163,7 +163,6 @@ fn map_linkedlist<T>(list: &mut LinkedList<T>, mut f: impl FnMut(&mut LinkedList
         } else {
             before.append(&mut after);
         }
-        
     }
     *list = before;
 }

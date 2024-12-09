@@ -1,7 +1,7 @@
 use crate::util::Grid;
 
 fn matches(grid: &Grid<&[u8]>, text: &[u8], x: usize, y: usize, dx: isize, dy: isize) -> bool {
-    for (i, c) in text.into_iter().enumerate() {
+    for (i, c) in text.iter().enumerate() {
         let x = (x as isize + (i as isize) * dx) as usize;
         let y = (y as isize + (i as isize) * dy) as usize;
         if x >= grid.width() || y >= grid.height() {
@@ -64,13 +64,13 @@ pub fn part2(input: &str) -> usize {
                     if grid[(i + 1, j + 1)] != b'A' {
                         return 0;
                     }
-                    if !(grid[(i, j)] == b'M' && grid[(i + 2, j + 2)] == b'S')
-                        && !(grid[(i, j)] == b'S' && grid[(i + 2, j + 2)] == b'M')
+                    if !(grid[(i, j)] == b'M' && grid[(i + 2, j + 2)] == b'S'
+                        || grid[(i, j)] == b'S' && grid[(i + 2, j + 2)] == b'M')
                     {
                         return 0;
                     }
-                    if !(grid[(i + 2, j)] == b'M' && grid[(i, j + 2)] == b'S')
-                        && !(grid[(i + 2, j)] == b'S' && grid[(i, j + 2)] == b'M')
+                    if !(grid[(i + 2, j)] == b'M' && grid[(i, j + 2)] == b'S'
+                        || grid[(i + 2, j)] == b'S' && grid[(i, j + 2)] == b'M')
                     {
                         return 0;
                     }

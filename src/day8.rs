@@ -6,7 +6,7 @@ fn find_antennas<T: Deref<Target = [u8]>>(grid: &Grid<T>) -> HashMap<u8, HashSet
     let mut antennas = HashMap::new();
     for (pos, value) in grid.iter() {
         if *value != b'.' {
-            let entry = antennas.entry(*value).or_insert_with(|| HashSet::new());
+            let entry = antennas.entry(*value).or_insert_with(HashSet::new);
             entry.insert(pos);
         }
     }
@@ -20,8 +20,8 @@ fn calc_antinodes(a: (usize, usize), b: (usize, usize)) -> impl Iterator<Item = 
     let (x1, y1) = (x - dx, y - dy);
     let (x2, y2) = (i + dx, j + dy);
     [
-        (x1 >= 0 && y1 >= 0).then(|| (x1 as usize, y1 as usize)),
-        (x2 >= 0 && y2 >= 0).then(|| (x2 as usize, y2 as usize)),
+        (x1 >= 0 && y1 >= 0).then_some((x1 as usize, y1 as usize)),
+        (x2 >= 0 && y2 >= 0).then_some((x2 as usize, y2 as usize)),
     ]
     .into_iter()
     .flatten()
@@ -36,11 +36,7 @@ pub fn part1(input: &str) -> usize {
 
     for (_, antennas) in antennas {
         for (a, b) in antennas.iter().permutations() {
-            antinodes.extend(
-                calc_antinodes(*a, *b)
-                    .into_iter()
-                    .filter(|pos| grid.contains(*pos)),
-            );
+            antinodes.extend(calc_antinodes(*a, *b).filter(|pos| grid.contains(*pos)));
         }
     }
     antinodes.len()
@@ -93,11 +89,7 @@ pub fn part2(input: &str) -> usize {
 
     for (_, antennas) in antennas {
         for (a, b) in antennas.iter().permutations() {
-            antinodes.extend(
-                calc_all_antinodes(&grid, *a, *b)
-                    .into_iter()
-                    .filter(|pos| grid.contains(*pos)),
-            );
+            antinodes.extend(calc_all_antinodes(&grid, *a, *b).filter(|pos| grid.contains(*pos)));
         }
     }
 

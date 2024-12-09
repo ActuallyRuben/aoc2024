@@ -19,7 +19,7 @@ pub fn is_safe(mut report: impl Iterator<Item = isize>) -> bool {
         return false;
     };
     let mut prev = second;
-    while let Some(next) = report.next() {
+    for next in report {
         if Some(direction) != get_direction(next - prev) {
             return false;
         }
@@ -42,7 +42,7 @@ pub fn part1(input: &str) -> isize {
         .sum()
 }
 
-pub fn is_damped_safe(report: impl Iterator<Item = isize> + Clone + ExactSizeIterator) -> bool {
+pub fn is_damped_safe(report: impl ExactSizeIterator<Item = isize> + Clone) -> bool {
     for i in 0..report.len() {
         let damped_report = report.clone().take(i).chain(report.clone().skip(i + 1));
         if is_safe(damped_report) {

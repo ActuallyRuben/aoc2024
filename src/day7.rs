@@ -18,13 +18,8 @@ fn can_fit(total: usize, values: &[usize]) -> bool {
     if values.len() == 1 {
         return total == head;
     }
-    if total % head == 0 && can_fit(total / head, &values[1..]) {
-        true
-    } else if total > head && can_fit(total - head, &values[1..]) {
-        true
-    } else {
-        false
-    }
+    (total % head == 0 && can_fit(total / head, &values[1..]))
+        || (total > head && can_fit(total - head, &values[1..]))
 }
 
 pub fn part1(input: &str) -> usize {
@@ -61,15 +56,9 @@ fn can_fit_concat(total: usize, values: &[usize]) -> bool {
     if values.len() == 1 {
         return total == head;
     }
-    if total % head == 0 && can_fit_concat(total / head, &values[1..]) {
-        true
-    } else if total > head && can_fit_concat(total - head, &values[1..]) {
-        true
-    } else if deconcat(head, total).is_some_and(|lhs| can_fit_concat(lhs, &values[1..])) {
-        true
-    } else {
-        false
-    }
+    (total % head == 0 && can_fit_concat(total / head, &values[1..]))
+        || (total > head && can_fit_concat(total - head, &values[1..]))
+        || deconcat(head, total).is_some_and(|lhs| can_fit_concat(lhs, &values[1..]))
 }
 
 pub fn part2(input: &str) -> usize {
