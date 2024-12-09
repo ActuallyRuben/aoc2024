@@ -8,6 +8,7 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+mod day9;
 mod macros;
 pub(crate) mod util;
 
@@ -40,4 +41,5 @@ fn main() {
     puzzle!(day6: part1 = 4890, part2 = 1995);
     puzzle!(day7: part1 = 3312271365652, part2 = 509463489296712);
     puzzle!(day8: part1 = 244, part2 = 912);
+    puzzle!(day9: part1);
 }
