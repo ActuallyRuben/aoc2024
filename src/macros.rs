@@ -10,7 +10,7 @@ macro_rules! puzzle {
 #[macro_export]
 macro_rules! puzzle_part {
     ($day:ident: $part:ident = $solution:expr) => {{
-        if cfg!(feature = "bench") {
+        #[cfg(feature = "bench")] {
             let do_run = || {
                 let mut total_time = std::time::Duration::from_micros(0);
                 let solution = $solution;

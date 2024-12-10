@@ -1,49 +1,7 @@
-use crate::util::Grid;
+use crate::util::{Direction, RefGrid};
 use std::collections::HashSet;
-use std::ops::Add;
 use std::sync::Mutex;
 use std::thread;
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-enum Direction {
-    North,
-    East,
-    South,
-    West,
-}
-
-impl Direction {
-    fn rotate_right(&self) -> Direction {
-        match self {
-            Direction::North => Direction::East,
-            Direction::East => Direction::South,
-            Direction::South => Direction::West,
-            Direction::West => Direction::North,
-        }
-    }
-}
-
-impl Add<Direction> for (usize, usize) {
-    type Output = (usize, usize);
-
-    fn add(self, rhs: Direction) -> Self::Output {
-        let (x, y) = self;
-        match rhs {
-            Direction::North => (x, y - 1),
-            Direction::East => (x + 1, y),
-            Direction::South => (x, y + 1),
-            Direction::West => (x - 1, y),
-        }
-    }
-}
-
-impl Add<(usize, usize)> for Direction {
-    type Output = (usize, usize);
-
-    fn add(self, rhs: (usize, usize)) -> Self::Output {
-        rhs + self
-    }
-}
 
 #[derive(Clone, Hash, Eq, PartialEq)]
 struct Guard {
@@ -52,7 +10,7 @@ struct Guard {
 }
 
 pub fn part1(input: &str) -> usize {
-    let mut grid = Grid::from_str_cloned(input);
+    let mut grid = RefGrid::from_str_cloned(input);
     let mut guard = None;
     for (pos, v) in grid.iter() {
         if *v == b'^' {
@@ -87,7 +45,7 @@ pub fn part1(input: &str) -> usize {
 }
 
 fn can_escape(
-    grid: &Grid<&[u8]>,
+    grid: &RefGrid<&[u8]>,
     extra_obstacle: (usize, usize),
     mut visited: HashSet<Guard>,
     mut guard: Guard,
@@ -112,7 +70,7 @@ fn can_escape(
 }
 
 pub fn part2(input: &str) -> usize {
-    let grid = Grid::from_str(input);
+    let grid = RefGrid::from_str(input);
     let mut guard = None;
     for (pos, v) in grid.iter() {
         if *v == b'^' {

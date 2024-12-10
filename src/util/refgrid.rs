@@ -2,13 +2,13 @@ use std::fmt::{Display, Formatter};
 use std::ops::{Deref, DerefMut, Index, IndexMut};
 
 #[derive(Debug, Clone)]
-pub struct Grid<T> {
+pub struct RefGrid<T> {
     width: usize,
     height: usize,
     contents: T,
 }
 
-impl<'a> Grid<&'a [u8]> {
+impl<'a> RefGrid<&'a [u8]> {
     pub fn from_str(input: &'a str) -> Self {
         let width = input.lines().next().unwrap().len();
         let height = input.len() / (width + 1);
@@ -20,7 +20,7 @@ impl<'a> Grid<&'a [u8]> {
     }
 }
 
-impl Grid<Vec<u8>> {
+impl RefGrid<Vec<u8>> {
     pub fn from_str_cloned(input: &str) -> Self {
         let width = input.lines().next().unwrap().len();
         let height = input.len() / (width + 1);
@@ -30,9 +30,21 @@ impl Grid<Vec<u8>> {
             contents: input.as_bytes().into(),
         }
     }
+    
+    pub fn new(width: usize, height: usize) -> Self {
+        let mut contents = vec![0; (width + 1) * height];
+        for j in 0..height {
+            contents[width + width * j] = b'\n';
+        }
+        Self {
+            width,
+            height,
+            contents
+        }
+    }
 }
 
-impl<T> Grid<T> {
+impl<T> RefGrid<T> {
     pub fn width(&self) -> usize {
         self.width
     }
@@ -78,7 +90,7 @@ impl<T> Grid<T> {
     }
 }
 
-impl<T: Deref<Target = [u8]>> Index<(usize, usize)> for Grid<T> {
+impl<T: Deref<Target = [u8]>> Index<(usize, usize)> for RefGrid<T> {
     type Output = u8;
     fn index(&self, (x, y): (usize, usize)) -> &u8 {
         assert!(x < self.width);
@@ -86,16 +98,16 @@ impl<T: Deref<Target = [u8]>> Index<(usize, usize)> for Grid<T> {
     }
 }
 
-impl<T: DerefMut + Deref<Target = [u8]>> IndexMut<(usize, usize)> for Grid<T> {
+impl<T: DerefMut + Deref<Target = [u8]>> IndexMut<(usize, usize)> for RefGrid<T> {
     fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut u8 {
         assert!(x < self.width);
         &mut self.contents[y * (self.width + 1) + x]
     }
 }
 
-impl<T: Deref<Target = [u8]>> Display for Grid<T> {
+impl<T: Deref<Target = [u8]>> Display for RefGrid<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let text = std::str::from_utf8(&self.contents).unwrap();
+        let text = String::from_utf8_lossy(&self.contents);
         write!(f, "{text}")
     }
 }

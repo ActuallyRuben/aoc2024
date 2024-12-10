@@ -1,8 +1,8 @@
-use crate::util::{Grid, Permutable};
+use crate::util::{RefGrid, Permutable};
 use std::collections::{HashMap, HashSet};
 use std::ops::Deref;
 
-fn find_antennas<T: Deref<Target = [u8]>>(grid: &Grid<T>) -> HashMap<u8, HashSet<(usize, usize)>> {
+fn find_antennas<T: Deref<Target = [u8]>>(grid: &RefGrid<T>) -> HashMap<u8, HashSet<(usize, usize)>> {
     let mut antennas = HashMap::new();
     for (pos, value) in grid.iter() {
         if *value != b'.' {
@@ -28,7 +28,7 @@ fn calc_antinodes(a: (usize, usize), b: (usize, usize)) -> impl Iterator<Item = 
 }
 
 pub fn part1(input: &str) -> usize {
-    let grid = Grid::from_str(input);
+    let grid = RefGrid::from_str(input);
 
     let antennas = find_antennas(&grid);
 
@@ -43,7 +43,7 @@ pub fn part1(input: &str) -> usize {
 }
 
 fn calc_all_antinodes<T>(
-    grid: &Grid<T>,
+    grid: &RefGrid<T>,
     a: (usize, usize),
     b: (usize, usize),
 ) -> impl Iterator<Item = (usize, usize)> + '_ {
@@ -81,7 +81,7 @@ fn calc_all_antinodes<T>(
 }
 
 pub fn part2(input: &str) -> usize {
-    let grid = Grid::from_str(input);
+    let grid = RefGrid::from_str(input);
 
     let antennas = find_antennas(&grid);
 

@@ -1,6 +1,6 @@
-use crate::util::Grid;
+use crate::util::RefGrid;
 
-fn matches(grid: &Grid<&[u8]>, text: &[u8], x: usize, y: usize, dx: isize, dy: isize) -> bool {
+fn matches(grid: &RefGrid<&[u8]>, text: &[u8], x: usize, y: usize, dx: isize, dy: isize) -> bool {
     for (i, c) in text.iter().enumerate() {
         let x = (x as isize + (i as isize) * dx) as usize;
         let y = (y as isize + (i as isize) * dy) as usize;
@@ -15,7 +15,7 @@ fn matches(grid: &Grid<&[u8]>, text: &[u8], x: usize, y: usize, dx: isize, dy: i
 }
 
 pub fn part1(input: &str) -> usize {
-    let grid = Grid::from_str(input);
+    let grid = RefGrid::from_str(input);
     const XMAS: &[u8] = b"XMAS";
     const SAMX: &[u8] = b"SAMX";
     (0..grid.height())
@@ -55,7 +55,7 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    let grid = Grid::from_str(input);
+    let grid = RefGrid::from_str(input);
 
     (0..(grid.height() - 2))
         .map(|j| {
