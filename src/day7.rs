@@ -1,4 +1,5 @@
 use rayon::prelude::*;
+use crate::util::count_digits;
 
 fn parse_line(line: &str) -> (usize, Vec<usize>) {
     let mut spliterator = line.splitn(2, ": ");
@@ -41,9 +42,13 @@ fn deconcat(rhs: usize, result: usize) -> Option<usize> {
     if rhs >= result {
         return None;
     }
-    let rhs_digits = (rhs as f32).log10().floor() as u32 + 1;
     let lhs_mulled = result - rhs;
-    let rhs_amt = 10usize.pow(rhs_digits);
+    let mut rhs_amt = 1;
+    
+    while rhs_amt <= rhs {
+        rhs_amt *= 10;
+    }
+    
     if lhs_mulled % rhs_amt == 0 {
         Some(lhs_mulled / rhs_amt)
     } else {

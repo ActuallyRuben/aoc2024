@@ -28,3 +28,12 @@ pub fn map_linkedlist<T>(
     }
     *list = before;
 }
+
+pub fn count_digits(mut value: usize) -> usize {
+    let mut digits = 1;
+    while value >= 10 {
+        digits += 1;
+        value /= 10;
+    }
+    digits
+}

@@ -1,17 +1,18 @@
 use std::collections::HashMap;
+use crate::util::count_digits;
 
 fn count_rocks(
     value: usize,
     blinks_left: usize,
-    cache: &mut HashMap<(usize, usize), usize>,
+    cache: &mut [HashMap<usize, usize>],
 ) -> usize {
     if blinks_left == 0 {
         return 1;
     }
-    if let Some(result) = cache.get(&(value, blinks_left)) {
+    if let Some(result) = cache[blinks_left - 1].get(&value) {
         return *result;
     }
-    let digits = (value as f64).log10().floor() as u32 + 1;
+    let digits = count_digits(value) as u32;
     let result = if value == 0 {
         count_rocks(1, blinks_left - 1, cache)
     } else if digits % 2 == 0 {
@@ -21,12 +22,12 @@ fn count_rocks(
     } else {
         count_rocks(value * 2024, blinks_left - 1, cache)
     };
-    cache.insert((value, blinks_left), result);
+    cache[blinks_left - 1].insert(value, result);
     result
 }
 
 pub fn part1(input: &str) -> usize {
-    let mut cache = HashMap::new();
+    let mut cache = [(); 25].map(|_| HashMap::new());
     let stones: Vec<usize> = input
         .split_whitespace()
         .map(|x| x.parse().unwrap())
@@ -38,7 +39,7 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    let mut cache = HashMap::new();
+    let mut cache = [(); 75].map(|_| HashMap::new());
     let stones: Vec<usize> = input
         .split_whitespace()
         .map(|x| x.parse().unwrap())
