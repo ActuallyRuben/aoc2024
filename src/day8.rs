@@ -1,8 +1,10 @@
-use crate::util::{RefGrid, Permutable};
+use crate::util::{Permutable, RefGrid};
 use std::collections::{HashMap, HashSet};
 use std::ops::Deref;
 
-fn find_antennas<T: Deref<Target = [u8]>>(grid: &RefGrid<T>) -> HashMap<u8, HashSet<(usize, usize)>> {
+fn find_antennas<T: Deref<Target = [u8]>>(
+    grid: &RefGrid<T>,
+) -> HashMap<u8, HashSet<(usize, usize)>> {
     let mut antennas = HashMap::new();
     for (pos, value) in grid.iter() {
         if *value != b'.' {

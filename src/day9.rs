@@ -1,3 +1,4 @@
+use crate::util::map_linkedlist;
 use std::cmp::Ordering;
 use std::collections::LinkedList;
 use std::ops::ControlFlow;
@@ -147,22 +148,4 @@ pub fn part2(input: &str) -> usize {
     }
 
     result
-}
-
-fn map_linkedlist<T>(
-    list: &mut LinkedList<T>,
-    mut f: impl FnMut(&mut LinkedList<T>) -> ControlFlow<()>,
-) {
-    let mut before = LinkedList::new();
-    while !list.is_empty() {
-        let mut after = list.split_off(1);
-        let result = f(list);
-        before.append(list);
-        if result.is_continue() {
-            *list = after;
-        } else {
-            before.append(&mut after);
-        }
-    }
-    *list = before;
 }

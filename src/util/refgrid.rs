@@ -30,7 +30,7 @@ impl RefGrid<Vec<u8>> {
             contents: input.as_bytes().into(),
         }
     }
-    
+
     pub fn new(width: usize, height: usize) -> Self {
         let mut contents = vec![0; (width + 1) * height];
         for j in 0..height {
@@ -39,7 +39,7 @@ impl RefGrid<Vec<u8>> {
         Self {
             width,
             height,
-            contents
+            contents,
         }
     }
 }

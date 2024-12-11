@@ -1,5 +1,5 @@
 use std::fmt::{Display, Formatter};
-use std::ops::{Deref, DerefMut, Index, IndexMut};
+use std::ops::{Index, IndexMut};
 
 #[derive(Debug, Clone)]
 pub struct Grid<T> {
@@ -71,8 +71,7 @@ impl<T> IndexMut<(usize, usize)> for Grid<T> {
     }
 }
 
-impl<T: Display> Display for Grid<T>
-{
+impl<T: Display> Display for Grid<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for ((x, _), v) in self.iter() {
             write!(f, "{v}")?;

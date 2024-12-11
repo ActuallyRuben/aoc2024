@@ -17,8 +17,8 @@ impl Direction {
             Direction::West => Direction::North,
         }
     }
-    
-    pub fn iter() -> impl Iterator<Item=Direction> {
+
+    pub fn iter() -> impl Iterator<Item = Direction> {
         [Self::North, Self::East, Self::South, Self::West].into_iter()
     }
 }

@@ -15,10 +15,10 @@ pub fn part1(input: &str) -> usize {
             if c != *val {
                 continue 'inner;
             }
-            let positions: HashSet<_> = 
-                Direction::iter()
-                    .filter(|dir| grid.contains(pos + *dir) && chart[pos + *dir] == (*val + 1))
-                    .flat_map(|dir| grid[pos + dir].iter().copied()).collect();
+            let positions: HashSet<_> = Direction::iter()
+                .filter(|dir| grid.contains(pos + *dir) && chart[pos + *dir] == (*val + 1))
+                .flat_map(|dir| grid[pos + dir].iter().copied())
+                .collect();
             grid[pos] = positions;
         }
     }
@@ -46,8 +46,10 @@ pub fn part2(input: &str) -> usize {
                 continue 'inner;
             }
             let mut positions = HashMap::new();
-            for (pos, count) in Direction::iter().filter(|dir| grid.contains(pos + *dir) && chart[pos + *dir] == (*val + 1))
-                .flat_map(|dir| grid[pos + dir].iter()) {
+            for (pos, count) in Direction::iter()
+                .filter(|dir| grid.contains(pos + *dir) && chart[pos + *dir] == (*val + 1))
+                .flat_map(|dir| grid[pos + dir].iter())
+            {
                 let entry = positions.entry(*pos).or_insert_with(|| 0);
                 *entry += *count;
             }
