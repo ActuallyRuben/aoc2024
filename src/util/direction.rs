@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, AddAssign};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum Direction {
@@ -15,6 +15,14 @@ impl Direction {
             Direction::East => Direction::South,
             Direction::South => Direction::West,
             Direction::West => Direction::North,
+        }
+    }
+    pub fn rotate_left(&self) -> Direction {
+        match self {
+            Direction::North => Direction::West,
+            Direction::East => Direction::North,
+            Direction::South => Direction::East,
+            Direction::West => Direction::South,
         }
     }
 
@@ -42,5 +50,11 @@ impl Add<(usize, usize)> for Direction {
 
     fn add(self, rhs: (usize, usize)) -> Self::Output {
         rhs + self
+    }
+}
+
+impl AddAssign<Direction> for (usize, usize) {
+    fn add_assign(&mut self, rhs: Direction) {
+        *self = *self + rhs
     }
 }
