@@ -3,6 +3,7 @@ use std::time::Duration;
 mod day1;
 mod day10;
 mod day11;
+mod day12;
 mod day2;
 mod day3;
 mod day4;
@@ -52,4 +53,5 @@ fn main() {
     puzzle!(day9: part1 = 6435922584968, part2 = 6469636832766);
     puzzle!(day10: part1 = 489, part2 = 1086);
     puzzle!(day11: part1 = 193899, part2 = 229682160383225);
+    puzzle!(day12: part1 = 1381056);
 }
