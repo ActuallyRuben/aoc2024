@@ -1,5 +1,5 @@
-use rayon::prelude::*;
 use crate::util::count_digits;
+use rayon::prelude::*;
 
 fn parse_line(line: &str) -> (usize, Vec<usize>) {
     let mut spliterator = line.splitn(2, ": ");
@@ -44,11 +44,11 @@ fn deconcat(rhs: usize, result: usize) -> Option<usize> {
     }
     let lhs_mulled = result - rhs;
     let mut rhs_amt = 1;
-    
+
     while rhs_amt <= rhs {
         rhs_amt *= 10;
     }
-    
+
     if lhs_mulled % rhs_amt == 0 {
         Some(lhs_mulled / rhs_amt)
     } else {

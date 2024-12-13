@@ -1,10 +1,17 @@
-use std::collections::VecDeque;
 use crate::util::{Direction, RefGrid};
+use std::collections::VecDeque;
 
-fn get_plot_perimeter_area(location: (usize, usize), grid: &mut RefGrid<Vec<u8>>) -> (usize, usize) {
+fn get_plot_perimeter_area(
+    location: (usize, usize),
+    grid: &mut RefGrid<Vec<u8>>,
+) -> (usize, usize) {
     let plant_type = grid[location];
     grid[location] |= 0x80;
-    debug_assert_eq!(plant_type & 0x80, 0, "{location:?} has already been visited");
+    debug_assert_eq!(
+        plant_type & 0x80,
+        0,
+        "{location:?} has already been visited"
+    );
     let mut queue = VecDeque::from([location]);
     let mut area = 0;
     let mut perimeter = 0;
@@ -16,7 +23,7 @@ fn get_plot_perimeter_area(location: (usize, usize), grid: &mut RefGrid<Vec<u8>>
             let new_pos = location + dir;
             if !grid.contains(new_pos) {
                 perimeter += 1;
-                continue
+                continue;
             }
             if grid[new_pos] & 0x7f == plant_type {
                 if grid[new_pos] & 0x80 == 0x00 {
@@ -49,7 +56,11 @@ pub fn part1(input: &str) -> usize {
 fn get_plot_sides_area(location: (usize, usize), grid: &mut RefGrid<Vec<u8>>) -> (usize, usize) {
     let plant_type = grid[location] & 0x7f;
     grid[location] |= 0x80;
-    debug_assert_eq!(plant_type & 0x80, 0, "{location:?} has already been visited");
+    debug_assert_eq!(
+        plant_type & 0x80,
+        0,
+        "{location:?} has already been visited"
+    );
     let mut queue = VecDeque::from([location]);
     let mut sides = 0;
     let mut area = 0;
@@ -61,7 +72,7 @@ fn get_plot_sides_area(location: (usize, usize), grid: &mut RefGrid<Vec<u8>>) ->
         for dir in Direction::iter() {
             let new_pos = location + dir;
             if !grid.contains(new_pos) {
-                continue
+                continue;
             }
             if grid[new_pos] & 0x7f == plant_type {
                 if grid[new_pos] & 0x80 == 0x00 {
@@ -82,9 +93,14 @@ fn count_corners(location: (usize, usize), grid: &mut RefGrid<Vec<u8>>) -> usize
         let pos1 = location + dir;
         let pos2 = location + dir.rotate_right();
         let pos3 = location + dir + dir.rotate_right();
-        if (!grid.contains(pos1) || grid[pos1] & 0x7f != plant_type) && (!grid.contains(pos2) || grid[pos2] & 0x7f != plant_type) {
+        if (!grid.contains(pos1) || grid[pos1] & 0x7f != plant_type)
+            && (!grid.contains(pos2) || grid[pos2] & 0x7f != plant_type)
+        {
             corners += 1;
-        } else if (grid.contains(pos1) && grid[pos1] & 0x7f == plant_type) && (grid.contains(pos2) && grid[pos2] & 0x7f == plant_type) && (!grid.contains(pos3) || grid[pos3] & 0x7f != plant_type) {
+        } else if (grid.contains(pos1) && grid[pos1] & 0x7f == plant_type)
+            && (grid.contains(pos2) && grid[pos2] & 0x7f == plant_type)
+            && (!grid.contains(pos3) || grid[pos3] & 0x7f != plant_type)
+        {
             corners += 1;
         }
     }

@@ -1,11 +1,7 @@
-use std::collections::HashMap;
 use crate::util::count_digits;
+use std::collections::HashMap;
 
-fn count_rocks(
-    value: usize,
-    blinks_left: usize,
-    cache: &mut [HashMap<usize, usize>],
-) -> usize {
+fn count_rocks(value: usize, blinks_left: usize, cache: &mut [HashMap<usize, usize>]) -> usize {
     if blinks_left == 0 {
         return 1;
     }
