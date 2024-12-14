@@ -44,6 +44,8 @@ const TIMEOUT: Duration = Duration::from_millis(500);
 // day11::part2 (avg 8.506414ms, stddev 186.386µs in 59 runs)
 // day12::part1 (avg 263.765µs, stddev 14.648µs in 1896 runs)
 // day12::part2 (avg 466.671µs, stddev 20.039µs in 1072 runs)
+// day14::part1 (avg 26.078µs, stddev 2.363µs in 19173 runs)
+// day14::part2 (avg 14.375035ms, stddev 66.855µs in 35 runs)
 
 fn main() {
     puzzle!(day1: part1 = 1579939, part2 = 20351745);
@@ -59,5 +61,5 @@ fn main() {
     puzzle!(day11: part1 = 193899, part2 = 229682160383225);
     puzzle!(day12: part1 = 1381056, part2 = 834828);
     puzzle!(day13: part1 = 29522, part2 = 101214869433312);
-    puzzle!(day14: part1 = 228410028);
+    puzzle!(day14: part1 = 228410028, part2 = 8258);
 }

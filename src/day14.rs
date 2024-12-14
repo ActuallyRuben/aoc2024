@@ -1,5 +1,7 @@
 use crate::util::Grid;
+use std::collections::HashSet;
 use std::str::FromStr;
+use rayon::prelude::*;
 
 const WIDTH: isize = 101;
 const HEIGHT: isize = 103;
@@ -55,6 +57,7 @@ impl FromStr for Robot {
     }
 }
 
+#[allow(unused)]
 fn print_robots(robots: &[Robot]) {
     let mut grid: Grid<char> = Grid::new(WIDTH as usize, HEIGHT as usize);
     for (_, v) in grid.iter_mut() {
@@ -63,6 +66,11 @@ fn print_robots(robots: &[Robot]) {
     for robot in robots {
         let (x, y) = robot.p;
         grid[(x as usize, y as usize)] = (grid[(x as usize, y as usize)] as u8 + 1) as char;
+    }
+    for (_, v) in grid.iter_mut() {
+        if *v == '0' {
+            *v = ' ';
+        }
     }
     println!("{grid}");
 }
@@ -81,4 +89,24 @@ pub fn part1(input: &str) -> usize {
         quadrants[quadrant] += 1;
     }
     quadrants.into_iter().product()
+}
+
+pub fn part2(input: &str) -> usize {
+    let mut robots: Vec<(Robot, usize)> = input.lines().map(|line| (line.parse().unwrap(), 0)).collect();
+    let mut seconds = 0;
+    let mut position_set = HashSet::new();
+    'outer: loop {
+        seconds += 1;
+        
+        for (robot, last_sim) in &mut robots {
+            robot.simulate(seconds - *last_sim);
+            *last_sim = seconds;
+            if !position_set.insert(robot.p) {
+                position_set.clear();
+                continue 'outer;
+            }
+        }
+        break;
+    }
+    seconds
 }
