@@ -1,7 +1,7 @@
 use crate::util::Grid;
+use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::str::FromStr;
-use rayon::prelude::*;
 
 const WIDTH: isize = 101;
 const HEIGHT: isize = 103;
@@ -21,19 +21,15 @@ impl Robot {
 
     fn quadrant(&self) -> Option<usize> {
         let (x, y) = self.p;
-        let qx = if x < (WIDTH / 2) {
-            0
-        } else if x > (WIDTH / 2) {
-            1
-        } else {
-            return None;
+        let qx = match x.cmp(&(WIDTH / 2)) {
+            Ordering::Less => 0,
+            Ordering::Greater => 1,
+            Ordering::Equal => return None,
         };
-        let qy = if y < (HEIGHT / 2) {
-            0
-        } else if y > (HEIGHT / 2) {
-            2
-        } else {
-            return None;
+        let qy = match y.cmp(&(HEIGHT / 2)) {
+            Ordering::Less => 0,
+            Ordering::Greater => 2,
+            Ordering::Equal => return None,
         };
         Some(qx + qy)
     }
@@ -92,12 +88,15 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    let mut robots: Vec<(Robot, usize)> = input.lines().map(|line| (line.parse().unwrap(), 0)).collect();
+    let mut robots: Vec<(Robot, usize)> = input
+        .lines()
+        .map(|line| (line.parse().unwrap(), 0))
+        .collect();
     let mut seconds = 0;
     let mut position_set = HashSet::new();
     'outer: loop {
         seconds += 1;
-        
+
         for (robot, last_sim) in &mut robots {
             robot.simulate(seconds - *last_sim);
             *last_sim = seconds;

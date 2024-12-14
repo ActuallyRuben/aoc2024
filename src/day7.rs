@@ -1,4 +1,3 @@
-use crate::util::count_digits;
 use rayon::prelude::*;
 
 fn parse_line(line: &str) -> (usize, Vec<usize>) {

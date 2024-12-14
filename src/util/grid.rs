@@ -29,6 +29,7 @@ impl<T> Grid<T> {
         self.width
     }
 
+    #[allow(unused)]
     pub fn height(&self) -> usize {
         self.height
     }

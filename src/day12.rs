@@ -74,11 +74,9 @@ fn get_plot_sides_area(location: (usize, usize), grid: &mut RefGrid<Vec<u8>>) ->
             if !grid.contains(new_pos) {
                 continue;
             }
-            if grid[new_pos] & 0x7f == plant_type {
-                if grid[new_pos] & 0x80 == 0x00 {
-                    queue.push_back(new_pos);
-                    grid[new_pos] |= 0x80;
-                }
+            if grid[new_pos] == plant_type {
+                queue.push_back(new_pos);
+                grid[new_pos] |= 0x80;
             }
         }
     }
@@ -93,13 +91,11 @@ fn count_corners(location: (usize, usize), grid: &mut RefGrid<Vec<u8>>) -> usize
         let pos1 = location + dir;
         let pos2 = location + dir.rotate_right();
         let pos3 = location + dir + dir.rotate_right();
-        if (!grid.contains(pos1) || grid[pos1] & 0x7f != plant_type)
-            && (!grid.contains(pos2) || grid[pos2] & 0x7f != plant_type)
-        {
-            corners += 1;
-        } else if (grid.contains(pos1) && grid[pos1] & 0x7f == plant_type)
-            && (grid.contains(pos2) && grid[pos2] & 0x7f == plant_type)
-            && (!grid.contains(pos3) || grid[pos3] & 0x7f != plant_type)
+        if ((!grid.contains(pos1) || grid[pos1] & 0x7f != plant_type)
+            && (!grid.contains(pos2) || grid[pos2] & 0x7f != plant_type))
+            || ((grid.contains(pos1) && grid[pos1] & 0x7f == plant_type)
+                && (grid.contains(pos2) && grid[pos2] & 0x7f == plant_type)
+                && (!grid.contains(pos3) || grid[pos3] & 0x7f != plant_type))
         {
             corners += 1;
         }

@@ -31,6 +31,7 @@ impl RefGrid<Vec<u8>> {
         }
     }
 
+    #[allow(unused)]
     pub fn new(width: usize, height: usize) -> Self {
         let mut contents = vec![0; (width + 1) * height];
         for j in 0..height {
@@ -73,6 +74,7 @@ impl<T> RefGrid<T> {
             .filter(move |((i, _), _)| *i < width)
     }
 
+    #[allow(unused)]
     pub fn iter_mut(&mut self) -> impl Iterator<Item = ((usize, usize), &mut u8)>
     where
         T: Deref<Target = [u8]> + DerefMut,
