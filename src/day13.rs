@@ -6,9 +6,9 @@ struct Machine {
 }
 
 fn parse_button(input: &str) -> (isize, isize) {
-    let mut button = input.splitn(2, ',');
-    let x = button.next().unwrap()[12..].parse().unwrap();
-    let y = button.next().unwrap()[3..].parse().unwrap();
+    let (x, y) = input.split_once(',').unwrap();
+    let x = x[12..].parse().unwrap();
+    let y = y[3..].parse().unwrap();
     (x, y)
 }
 
@@ -16,9 +16,9 @@ fn parse_machine(input: &str) -> Machine {
     let mut input = input.lines();
     let axy = parse_button(input.next().unwrap());
     let bxy = parse_button(input.next().unwrap());
-    let mut prize = input.next().unwrap().splitn(2, ',');
-    let prize_x = prize.next().unwrap()[9..].parse().unwrap();
-    let prize_y = prize.next().unwrap()[3..].parse().unwrap();
+    let (prize_x, prize_y) = input.next().unwrap().split_once(',').unwrap();
+    let prize_x = prize_x[9..].parse().unwrap();
+    let prize_y = prize_y[3..].parse().unwrap();
     Machine {
         axy,
         bxy,

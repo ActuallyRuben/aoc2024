@@ -39,13 +39,13 @@ impl FromStr for Robot {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut splitted = s.splitn(2, ' ');
-        let mut p = splitted.next().ok_or(())?[2..].splitn(2, ',');
-        let px: isize = p.next().ok_or(())?.parse().map_err(|_| ())?;
-        let py: isize = p.next().ok_or(())?.parse().map_err(|_| ())?;
-        let mut v = splitted.next().ok_or(())?[2..].splitn(2, ',');
-        let vx: isize = v.next().ok_or(())?.parse().map_err(|_| ())?;
-        let vy: isize = v.next().ok_or(())?.parse().map_err(|_| ())?;
+        let (p, v) = s.split_once(' ').ok_or(())?;
+        let (px, py) = p[2..].split_once(',').ok_or(())?;
+        let px: isize = px.parse().map_err(|_| ())?;
+        let py: isize = py.parse().map_err(|_| ())?;
+        let (vx, vy) = v[2..].split_once(',').ok_or(())?;
+        let vx: isize = vx.parse().map_err(|_| ())?;
+        let vy: isize = vy.parse().map_err(|_| ())?;
         Ok(Robot {
             p: (px, py),
             v: (vx, vy),

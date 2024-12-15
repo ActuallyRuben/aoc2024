@@ -38,9 +38,9 @@ pub fn part1(input: &str) -> usize {
         if line.is_empty() {
             break;
         }
-        let mut split = line.splitn(2, '|');
-        let before = split.next().unwrap().parse::<usize>().unwrap();
-        let after = split.next().unwrap().parse::<usize>().unwrap();
+        let (before, after) = line.split_once('|').unwrap();
+        let before = before.parse::<usize>().unwrap();
+        let after = after.parse::<usize>().unwrap();
         let afterset = after_rels.entry(before).or_insert_with(HashSet::new);
         afterset.insert(after);
     }
@@ -68,9 +68,9 @@ pub fn part2(input: &str) -> usize {
         if line.is_empty() {
             break;
         }
-        let mut split = line.splitn(2, '|');
-        let before = split.next().unwrap().parse::<usize>().unwrap();
-        let after = split.next().unwrap().parse::<usize>().unwrap();
+        let (before, after) = line.split_once('|').unwrap();
+        let before = before.parse::<usize>().unwrap();
+        let after = after.parse::<usize>().unwrap();
         let afterset = after_rels.entry(before).or_insert_with(HashSet::new);
         afterset.insert(after);
     }

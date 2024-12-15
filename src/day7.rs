@@ -1,11 +1,9 @@
 use rayon::prelude::*;
 
 fn parse_line(line: &str) -> (usize, Vec<usize>) {
-    let mut spliterator = line.splitn(2, ": ");
-    let result: usize = spliterator.next().unwrap().parse().unwrap();
-    let seq: Vec<usize> = spliterator
-        .next()
-        .unwrap()
+    let (result, seq) = line.split_once(": ").unwrap();
+    let result: usize = result.parse().unwrap();
+    let seq: Vec<usize> = seq
         .split_whitespace()
         .rev()
         .map(|x| x.parse().unwrap())
