@@ -1,6 +1,6 @@
 use std::ops::{Add, AddAssign};
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum Direction {
     North,
     East,
@@ -56,5 +56,19 @@ impl Add<(usize, usize)> for Direction {
 impl AddAssign<Direction> for (usize, usize) {
     fn add_assign(&mut self, rhs: Direction) {
         *self = *self + rhs
+    }
+}
+
+impl TryFrom<char> for Direction {
+    type Error = ();
+
+    fn try_from(value: char) -> Result<Self, Self::Error> {
+        Ok(match value {
+            '^' => Direction::North,
+            '>' => Direction::East,
+            'v' => Direction::South,
+            '<' => Direction::West,
+            _ => return Err(())
+        })
     }
 }
