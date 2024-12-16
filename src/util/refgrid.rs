@@ -24,7 +24,7 @@ impl RefGrid<Vec<u8>> {
     pub fn from_str_cloned(input: &str) -> Self {
         Self::from_string(input.to_string())
     }
-    
+
     pub fn from_string(input: String) -> Self {
         let width = input.lines().next().unwrap().len();
         let height = input.len() / (width + 1);

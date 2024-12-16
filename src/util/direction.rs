@@ -68,7 +68,7 @@ impl TryFrom<char> for Direction {
             '>' => Direction::East,
             'v' => Direction::South,
             '<' => Direction::West,
-            _ => return Err(())
+            _ => return Err(()),
         })
     }
 }
