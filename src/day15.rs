@@ -12,7 +12,7 @@ fn calc_score(grid: &RefGrid<impl Deref<Target = [u8]>>, target: u8) -> usize {
 fn try_move(
     object: (usize, usize),
     direction: Direction,
-    grid: &mut RefGrid<impl Deref<Target = [u8]> + DerefMut>,
+    grid: &mut RefGrid<impl DerefMut<Target = [u8]>>,
 ) -> Result<(usize, usize), (usize, usize)> {
     let new_pos = object + direction;
     let space_available = match grid[new_pos] {
@@ -76,7 +76,7 @@ fn can_move(
 fn do_move(
     object: (usize, usize),
     direction: Direction,
-    grid: &mut RefGrid<impl Deref<Target = [u8]> + DerefMut>,
+    grid: &mut RefGrid<impl DerefMut<Target = [u8]>>,
 ) {
     let (x, y) = object + direction;
     match grid[(x, y)] {
@@ -126,7 +126,7 @@ pub fn part2(input: &str) -> usize {
     {
         if can_move(robot, dir, &grid) {
             do_move(robot, dir, &mut grid);
-            robot = robot + dir;
+            robot += dir;
         }
     }
 

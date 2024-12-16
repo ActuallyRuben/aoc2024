@@ -1,6 +1,6 @@
 use crate::util::{Direction, Grid, RefGrid};
 use std::cmp::{Ordering, Reverse};
-use std::collections::{BinaryHeap, HashSet, VecDeque};
+use std::collections::{BinaryHeap, VecDeque};
 
 #[derive(Copy, Clone)]
 struct Position {
@@ -76,9 +76,8 @@ fn number_to_dir(dir: usize) -> Direction {
 
 pub fn part1(input: &str) -> usize {
     let grid = RefGrid::from_str(input);
-    let mut visited: [Grid<bool>; 4] =
-        [(); 4].map(|_| Grid::new(grid.width(), grid.height()));
-    
+    let mut visited: [Grid<bool>; 4] = [(); 4].map(|_| Grid::new(grid.width(), grid.height()));
+
     let mut heap = BinaryHeap::new();
     let end_pos = (grid.width() - 2, 1);
     let start_pos = Position {
@@ -180,7 +179,7 @@ pub fn part2(input: &str) -> usize {
                 queue.push_back((pos, rotate_right, right_cost))
             }
         }
-        let new_pos = pos + -number_to_dir(dir);
+        let new_pos = pos - number_to_dir(dir);
         if let Some(forward_cost) = visited[dir]
             .contains(new_pos)
             .then(|| visited[dir][new_pos])
