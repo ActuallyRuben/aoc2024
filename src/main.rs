@@ -8,6 +8,7 @@ mod day13;
 mod day14;
 mod day15;
 mod day16;
+mod day17;
 mod day2;
 mod day3;
 mod day4;
@@ -72,4 +73,5 @@ fn main() {
     puzzle!(day14: part1 = 228410028, part2 = 8258);
     puzzle!(day15: part1 = 1552463, part2 = 1554058);
     puzzle!(day16: part1 = 98520, part2 = 609);
+    puzzle!(day17: part1, part2);
 }
