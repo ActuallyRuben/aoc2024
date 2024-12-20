@@ -2,12 +2,14 @@ mod direction;
 mod grid;
 mod permutations;
 mod refgrid;
+mod solver;
 mod sortedvec;
 
 pub use direction::Direction;
 pub use grid::Grid;
 pub use permutations::Permutable;
 pub use refgrid::RefGrid;
+pub use solver::{Solver, Variable};
 use std::collections::LinkedList;
 use std::ops::ControlFlow;
 
