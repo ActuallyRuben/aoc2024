@@ -12,6 +12,7 @@ mod day17;
 mod day18;
 mod day19;
 mod day2;
+mod day20;
 mod day3;
 mod day4;
 mod day5;
@@ -61,6 +62,8 @@ const TIMEOUT: Duration = Duration::from_millis(500);
 // day18::part2 (avg 114.213921ms, stddev 531.700µs in 5 runs)
 // day19::part1 (avg 1.600037ms, stddev 51.120µs in 313 runs)
 // day19::part2 (avg 12.820337ms, stddev 152.760µs in 40 runs)
+// day20::part1 (avg 450.835µs, stddev 23.982µs in 1110 runs)
+// day20::part2 (avg 19.282104ms, stddev 192.605µs in 26 runs)
 
 fn main() {
     puzzle!(day1: part1 = 1579939, part2 = 20351745);
@@ -82,4 +85,5 @@ fn main() {
     // puzzle!(day17: part1, part2);
     puzzle!(day18: part1 = 252, part2 = "5,60");
     puzzle!(day19: part1 = 276, part2 = 681226908011510);
+    puzzle!(day20: part1 = 1490, part2 = 1011325);
 }
