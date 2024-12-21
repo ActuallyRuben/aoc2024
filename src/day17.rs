@@ -1,5 +1,4 @@
-use crate::util::{Solver, Variable};
-use rayon::prelude::*;
+use crate::util::Solver;
 
 struct MachineState<'a> {
     a: usize,
@@ -40,7 +39,7 @@ impl Iterator for MachineState<'_> {
                 _ => 0,
             };
             match instr {
-                0 => self.a = self.a >> combo,
+                0 => self.a >>= combo,
                 1 => self.b ^= op,
                 2 => self.b = combo % 8,
                 3 => {
@@ -69,7 +68,7 @@ impl MachineSolver {
     }
 
     fn eval_program(&mut self, b: usize, c: usize, program: &[usize]) -> usize {
-        let mut output = &program[..];
+        let mut output = program;
         let original_a = self.solver.unknown();
         let mut a = original_a;
         let mut b = self.solver.known(b);
@@ -136,7 +135,7 @@ fn run_program(mut a: usize, mut b: usize, mut c: usize, program: &[usize]) -> V
             _ => 0,
         };
         match instr {
-            0 => a = a >> combo,
+            0 => a >>= combo,
             1 => b ^= op,
             2 => b = combo % 8,
             3 => {
@@ -154,6 +153,7 @@ fn run_program(mut a: usize, mut b: usize, mut c: usize, program: &[usize]) -> V
     output
 }
 
+#[allow(unused)]
 pub fn part1(input: &str) -> String {
     let (registers, program) = input.split_once("\n\n").unwrap();
     let mut registers = registers
@@ -176,6 +176,7 @@ pub fn part1(input: &str) -> String {
         .join(",")
 }
 
+#[allow(unused)]
 pub fn part2(input: &str) -> usize {
     let (registers, program) = input.split_once("\n\n").unwrap();
     let mut registers = registers

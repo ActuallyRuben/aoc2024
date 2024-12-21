@@ -1,4 +1,4 @@
-use std::ops::{BitAnd, BitXor, Rem, Shr};
+use std::ops::{BitAnd, BitXor, Shr};
 
 pub struct Solver {
     variables: Vec<VariableImpl>,

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 fn can_make_pattern(pattern: &[u8], towels: &[&[u8]]) -> bool {
-    if pattern.len() == 0 {
+    if pattern.is_empty() {
         return true;
     }
     for towel in towels {
@@ -29,7 +29,7 @@ fn pattern_options<'a>(
     pattern: &'a [u8],
     towels: &[&[u8]],
 ) -> usize {
-    if pattern.len() == 0 {
+    if pattern.is_empty() {
         return 1;
     }
     if let Some(v) = cache.get(pattern) {

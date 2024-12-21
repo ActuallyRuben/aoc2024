@@ -27,7 +27,7 @@ fn manhattan((x1, y1): (usize, usize), (x2, y2): (usize, usize)) -> usize {
 
 fn find_shortcuts(costs: &Grid<usize>, min_timesave: usize) -> usize {
     let mut count = 0;
-    for (pos, cost) in costs.iter().filter(|(_, cost)| **cost == usize::MAX) {
+    for (pos, _) in costs.iter().filter(|(_, cost)| **cost == usize::MAX) {
         for entry_dir in Direction::iter()
             .filter(|dir| costs.contains(pos + *dir) && costs[pos + *dir] != usize::MAX)
         {
@@ -50,7 +50,7 @@ fn find_shortcuts(costs: &Grid<usize>, min_timesave: usize) -> usize {
 
 fn find_long_shortcuts(costs: &Grid<usize>, distance: usize, min_timesave: usize) -> usize {
     let mut count = 0;
-    for ((x, y), cost) in costs.iter().filter(|(_, cost)| **cost != usize::MAX) {
+    for ((x, y), _) in costs.iter().filter(|(_, cost)| **cost != usize::MAX) {
         for dx in -(distance as isize)..=(distance as isize) {
             let y_distance = distance as isize - dx.abs();
             for dy in -y_distance..=y_distance {
