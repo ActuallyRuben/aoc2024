@@ -44,7 +44,11 @@ fn make_movements(
     options
 }
 
-fn input_num_code(code: &str, robot_count: usize, cache: &mut [HashMap<((isize, isize), (isize, isize)), usize>]) -> usize {
+fn input_num_code(
+    code: &str,
+    robot_count: usize,
+    cache: &mut [HashMap<((isize, isize), (isize, isize)), usize>],
+) -> usize {
     let mut pos = (2, 3);
     let positions = [
         (1, 3),
@@ -69,7 +73,11 @@ fn input_num_code(code: &str, robot_count: usize, cache: &mut [HashMap<((isize, 
             length += *v;
         } else {
             let options = make_movements(pos, next_pos, (0, 3));
-            let best = options.into_iter().map(|x| input_dir_code(x, robot_count, &mut cache[1..])).min().unwrap();
+            let best = options
+                .into_iter()
+                .map(|x| input_dir_code(x, robot_count, &mut cache[1..]))
+                .min()
+                .unwrap();
             cache[0].insert((pos, next_pos), best);
             length += best;
         }
@@ -78,7 +86,11 @@ fn input_num_code(code: &str, robot_count: usize, cache: &mut [HashMap<((isize, 
     length
 }
 
-fn input_dir_code(code: String, depth: usize, cache: &mut [HashMap<((isize, isize), (isize, isize)), usize>]) -> usize {
+fn input_dir_code(
+    code: String,
+    depth: usize,
+    cache: &mut [HashMap<((isize, isize), (isize, isize)), usize>],
+) -> usize {
     if depth == 0 {
         return code.len();
     }
@@ -97,7 +109,11 @@ fn input_dir_code(code: String, depth: usize, cache: &mut [HashMap<((isize, isiz
             length += *v;
         } else {
             let options = make_movements(pos, next_pos, (0, 0));
-            let best = options.into_iter().map(|x| input_dir_code(x, depth - 1, &mut cache[1..])).min().unwrap();
+            let best = options
+                .into_iter()
+                .map(|x| input_dir_code(x, depth - 1, &mut cache[1..]))
+                .min()
+                .unwrap();
             cache[0].insert((pos, next_pos), best);
             length += best;
         }
@@ -108,18 +124,24 @@ fn input_dir_code(code: String, depth: usize, cache: &mut [HashMap<((isize, isiz
 
 pub fn part1(input: &str) -> usize {
     let mut cache = [(); 3].map(|_| HashMap::new());
-    input.lines().map(|code| {
-        let value: usize = code[0..3].parse().unwrap();
-        let input_length = input_num_code(code, 2, &mut cache);
-        input_length * value
-    }).sum()
+    input
+        .lines()
+        .map(|code| {
+            let value: usize = code[0..3].parse().unwrap();
+            let input_length = input_num_code(code, 2, &mut cache);
+            input_length * value
+        })
+        .sum()
 }
 
 pub fn part2(input: &str) -> usize {
     let mut cache = [(); 26].map(|_| HashMap::new());
-    input.lines().map(|code| {
-        let value: usize = code[0..3].parse().unwrap();
-        let input_length = input_num_code(code, 25, &mut cache);
-        input_length * value
-    }).sum()
+    input
+        .lines()
+        .map(|code| {
+            let value: usize = code[0..3].parse().unwrap();
+            let input_length = input_num_code(code, 25, &mut cache);
+            input_length * value
+        })
+        .sum()
 }
