@@ -1,5 +1,3 @@
-use crate::util::Solver;
-
 struct MachineState<'a> {
     a: usize,
     b: usize,
@@ -57,66 +55,6 @@ impl Iterator for MachineState<'_> {
     }
 }
 
-struct MachineSolver {
-    solver: Solver,
-}
-
-impl MachineSolver {
-    fn new() -> Self {
-        let solver = Solver::new();
-        Self { solver }
-    }
-
-    fn eval_program(&mut self, b: usize, c: usize, program: &[usize]) -> usize {
-        let mut output = program;
-        let original_a = self.solver.unknown();
-        let mut a = original_a;
-        let mut b = self.solver.known(b);
-        let mut c = self.solver.known(c);
-        let mut ip = 0;
-        let bitmask = self.solver.known(0x7);
-        let zero = self.solver.known(0);
-        loop {
-            if ip >= program.len() {
-                break;
-            }
-            let instr = program[ip];
-            let op = program[ip + 1];
-            ip += 2;
-            let operand = self.solver.known(op);
-            let combo = match op {
-                0..=3 => operand,
-                4 => a,
-                5 => b,
-                6 => c,
-                _ => operand,
-            };
-            match instr {
-                0 => a = self.solver.assign(a >> combo),
-                1 => b = self.solver.assign(b ^ operand),
-                2 => b = self.solver.assign(combo & bitmask),
-                3 => {
-                    if output.is_empty() {
-                        self.solver.constraint(a, zero.into());
-                    } else {
-                        ip = op;
-                    }
-                }
-                4 => b = self.solver.assign(b ^ c),
-                5 => {
-                    let value = self.solver.known(output[0]);
-                    self.solver.constraint(value, combo & bitmask);
-                    output = &output[1..];
-                }
-                6 => b = self.solver.assign(a >> combo),
-                7 => c = self.solver.assign(a >> combo),
-                _ => panic!(),
-            }
-        }
-        self.solver.solve_for(original_a)
-    }
-}
-
 fn run_program(mut a: usize, mut b: usize, mut c: usize, program: &[usize]) -> Vec<usize> {
     let mut ip = 0;
     let mut output = Vec::new();
@@ -153,7 +91,6 @@ fn run_program(mut a: usize, mut b: usize, mut c: usize, program: &[usize]) -> V
     output
 }
 
-#[allow(unused)]
 pub fn part1(input: &str) -> String {
     let (registers, program) = input.split_once("\n\n").unwrap();
     let mut registers = registers
@@ -176,7 +113,6 @@ pub fn part1(input: &str) -> String {
         .join(",")
 }
 
-#[allow(unused)]
 pub fn part2(input: &str) -> usize {
     let (registers, program) = input.split_once("\n\n").unwrap();
     let mut registers = registers
@@ -192,6 +128,26 @@ pub fn part2(input: &str) -> usize {
         .map(|v| v.parse::<usize>().unwrap())
         .collect();
 
-    let mut solver = MachineSolver::new();
-    solver.eval_program(reg_b, reg_c, &program)
+    let mut reg_a = 0;
+    let mut incr = 1;
+    loop {
+        let mut machine_state = MachineState::new(reg_a, reg_b, reg_c, &program);
+        let mut output = program.iter().copied();
+        if (&mut machine_state).zip(&mut output).all(|(a, b)| a == b) {
+            if machine_state.next().is_none() && output.next().is_none() {
+                return reg_a;
+            } else {
+                incr = next_multiple_of_two(reg_a);
+            }
+        }
+        reg_a += incr;
+    }
+}
+
+fn next_multiple_of_two(value: usize) -> usize {
+    let mut multiple = 1;
+    while multiple < value {
+        multiple <<= 1;
+    }
+    multiple
 }
