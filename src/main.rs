@@ -71,8 +71,8 @@ const TIMEOUT: Duration = Duration::from_millis(500);
 // day20::part2 (avg 19.496802ms, stddev 175.588µs in 26 runs)
 // day21::part1 (avg 9.401µs, stddev 1.382µs in 53182 runs)
 // day21::part2 (avg 96.003µs, stddev 5.651µs in 5209 runs)
-// day22::part1 (avg 8.176333ms, stddev 64.129µs in 62 runs)
-// day22::part2 (avg 286.374824ms, stddev 276.948µs in 2 runs)
+// day22::part1 (avg 379.771µs, stddev 19.543µs in 1317 runs)
+// day22::part2 (avg 118.652601ms, stddev 3709.610µs in 5 runs)
 // day23::part1 (avg 702.314µs, stddev 48.862µs in 712 runs)
 // day23::part2 (avg 67.022932ms, stddev 2764.033µs in 8 runs)
 
