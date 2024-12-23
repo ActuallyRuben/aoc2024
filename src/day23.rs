@@ -1,7 +1,10 @@
+use rayon::prelude::*;
 use std::collections::{HashMap, HashSet};
 
-fn parse_input(input: &str) -> HashMap<&str, HashSet<&str>> {
-    let mut connections: HashMap<&str, HashSet<&str>> = HashMap::new();
+type Connections<'a> = HashMap<&'a str, HashSet<&'a str>>;
+
+fn parse_input(input: &str) -> Connections {
+    let mut connections: Connections = HashMap::new();
     for line in input.lines() {
         let (a, b) = line.split_once('-').unwrap();
         let a_entry = connections.entry(a).or_default();
@@ -35,75 +38,40 @@ pub fn part1(input: &str) -> usize {
     groups.len()
 }
 
-fn get_pair_mut<T>(slice: &mut [T], a: usize, b: usize) -> (&mut T, &mut T) {
-    assert_ne!(a, b, "cannot get two mutable references to index {a}");
-    if a < b {
-        let (p1, p2) = slice.split_at_mut(b);
-        (&mut p1[a], &mut p2[0])
-    } else {
-        let (p1, p2) = slice.split_at_mut(a);
-        (&mut p1[b], &mut p2[0])
-    }
+fn find_max_group<'a>(connections: &Connections<'a>) -> Option<HashSet<&'a str>> {
+    let empty_map = HashSet::new();
+    let nodes: Vec<&str> = connections.keys().copied().collect();
+    (0..nodes.len())
+        .into_par_iter()
+        .map(|i| (nodes[i], &nodes[i + 1..]))
+        .filter_map(|(head, tail)| find_max_group_rec(tail, connections, &empty_map, head))
+        .max_by_key(|x| x.len())
 }
 
-fn merge_groups<'a>(
-    gid_a: usize,
-    gid_b: usize,
-    groups: &mut Vec<HashSet<&'a str>>,
-    nodes: &mut HashMap<&'a str, usize>,
-) {
-    if gid_a == gid_b {
-        return;
+fn find_max_group_rec<'a>(
+    nodes: &[&'a str],
+    connections: &Connections<'a>,
+    group: &HashSet<&'a str>,
+    new_node: &'a str,
+) -> Option<HashSet<&'a str>> {
+    if !connections[new_node].is_superset(&group) {
+        return None;
     }
-    let (group_a, group_b) = get_pair_mut(groups, gid_a, gid_b);
-    println!("joining {:?} and {:?}", group_a, group_b);
-    for node in group_b.drain() {
-        nodes.insert(node, gid_a);
-        group_a.insert(node);
-    }
-}
-
-fn connect_nodes<'a>(
-    a: &'a str,
-    b: &'a str,
-    groups: &mut Vec<HashSet<&'a str>>,
-    nodes: &mut HashMap<&'a str, usize>,
-) {
-    match (nodes.contains_key(a), nodes.contains_key(b)) {
-        (false, false) => {
-            let gid = groups.len();
-            groups.push(HashSet::from([a, b]));
-            nodes.insert(a, gid);
-            nodes.insert(b, gid);
-        }
-        (true, false) => {
-            let gid = nodes[a];
-            groups[gid].insert(b);
-            nodes.insert(b, gid);
-        }
-        (false, true) => {
-            let gid = nodes[b];
-            groups[gid].insert(a);
-            nodes.insert(a, gid);
-        }
-        (true, true) => {
-            merge_groups(nodes[a], nodes[b], groups, nodes);
-        }
-    }
+    let mut group = group.clone();
+    group.insert(new_node);
+    (0..nodes.len())
+        .filter(|i| connections[new_node].contains(&nodes[*i]))
+        .map(|i| (nodes[i], &nodes[i + 1..]))
+        .filter_map(|(nbor, tail)| find_max_group_rec(tail, connections, &group, nbor))
+        .max_by_key(|group| group.len())
+        .or(Some(group))
 }
 
 pub fn part2(input: &str) -> String {
-    let mut groups: Vec<HashSet<&str>> = Vec::new();
-    let mut nodes: HashMap<&str, usize> = HashMap::new();
-    for (a, b) in input.lines().map(|x| x.split_once('-').unwrap()) {
-        connect_nodes(a, b, &mut groups, &mut nodes);
-    }
-    let mut max_group = groups
-        .into_iter()
-        .max_by_key(|x| x.len())
-        .unwrap()
-        .into_iter()
-        .collect::<Vec<_>>();
+    let connections = parse_input(input);
+
+    let mut max_group: Vec<_> = find_max_group(&connections).unwrap().into_iter().collect();
     max_group.sort_unstable();
+
     max_group.join(",")
 }
